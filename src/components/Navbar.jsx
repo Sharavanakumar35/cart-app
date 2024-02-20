@@ -3,7 +3,7 @@ import { CartFill } from 'react-bootstrap-icons';
 import { useCart } from "../contexts/CartContext";
 
 const Navbar = () => {
-  const { totalPrice, totalQuantity } = useCart();
+  const { totalCost, totalQuantity } = useCart();
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container px-4 px-lg-5">
@@ -25,7 +25,7 @@ const Navbar = () => {
             <NavItem active={false} link="#!" text="About" />
             <DropdownNavItem />
           </ul>
-          <div className='me-5'><strong>Total Price: </strong>${totalPrice}</div>
+          <div className='me-5'><strong>Total Price: </strong>${totalCost}</div>
           <CartButton cartValue={totalQuantity} />
         </div>
       </div>

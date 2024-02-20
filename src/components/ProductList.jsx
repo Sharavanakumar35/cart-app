@@ -4,7 +4,7 @@ import productData from "../components/product.json";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const { removeFromCart, cartItems, updateQuantity, totalPrice } = useCart();
+  const { addToCart, removeFromCart } = useCart();
 
 
   useEffect(() => {
@@ -28,8 +28,21 @@ const ProductList = () => {
       quantity = 0;
     }
 
-    updateQuantity(product, quantity);
+    setProducts((prevProducts) => {
+      const existingItemIndex = prevProducts.findIndex(
+        (item) => item.id === product.id
+      );
+
+      if (existingItemIndex === -1) {
+        return [...prevProducts, { ...product, quantity }];
+      }
+
+      return prevProducts.map((item, index) =>
+        index === existingItemIndex ? { ...item, quantity } : item
+      );
+    });
   };
+
   const calculateSubtotal = (product, quantity) => {
     return product.price * quantity;
   };
@@ -39,9 +52,8 @@ const ProductList = () => {
       <div className="container my-5">
       <div className="row">
         {products.map(product => {
-          const cartItem = cartItems.find(item => item.id === product.id);
-          const quantity = cartItem && cartItem.quantity ? cartItem.quantity : 0;
-          const subtotal = calculateSubtotal(product, quantity);
+
+          const subtotal = calculateSubtotal(product, product?.quantity ? product?.quantity : 0);
 
           return (
             <div className="mb-4" key={product.id}>
@@ -57,14 +69,17 @@ const ProductList = () => {
                       type="number"
                       className="form-control"
                       id={`quantity-${product.id}`}
-                      value={quantity}
+                      value={product?.quantity ? product?.quantity : 0}
                       onChange={(e) => handleQuantityChange(product, e)}
                     />
                   </div>
                     <div>
                       <p>Sub Total: ${subtotal}</p>
-                      <button className="btn btn-danger my-2" onClick={() => handleRemoveFromCart(product.id)} disabled={quantity <= 0}>
+                      <button className="btn btn-danger my-2" onClick={() => handleRemoveFromCart(product.id)} disabled={product.quantity <= 0}>
                         Remove from Cart
+                      </button>
+                      <button className="btn btn-outline-dark my-2 ms-2" onClick={() => handleAddToCart(product, product.quantity)}>
+                        Add to Cart
                       </button>
                     </div>
                 
