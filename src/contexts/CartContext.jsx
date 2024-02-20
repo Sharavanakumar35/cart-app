@@ -32,22 +32,24 @@ export const CartProvider = ({ children }) => {
       );
 
       if (existingItemIndex === -1) {
-        return [...prevCartItems, { ...product, quantity }];
+        return [...prevCartItems, { ...product, quantity, inCart: true }];
       }
 
       return prevCartItems.map((item, index) =>
-        index === existingItemIndex ? { ...item, quantity } : item
+        index === existingItemIndex ? { ...item, quantity, inCart: true } : item
       );
     });
   };
 
   const addToCart = (product, quantity) => {
+    console.log(product);
     updateQuantity(product, quantity);
   };
 
   useEffect(() => {
     calcTotalPrice();
     calcTotalQuantity();
+    console.log(cartItems);
   }, [cartItems]);
 
   const calcTotalPrice = () => {
